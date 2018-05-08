@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">Notz</string>
+    <string name="dialog_add_note_title">Nuova nota</string>
+    <string name="dialog_positive_button">Aggiungi</string>
+    <string name="dialog_negative_button">Annulla</string>
+    <string name="confirm">Conferma</string>
+    <string name="cancel">Annulla</string>
+    <string name="delete">Elimina</string>
+    <string name="note_removed">Nota rimossa</string>
+    <string name="home_position">Posiziona sulla Home</string>
+    <string name="share">Condividi</string>
+    <string name="settings">Impostazioni</string>
+</resources>
