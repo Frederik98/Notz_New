@@ -14,6 +14,8 @@ public class Note {
 
     }
 
+    public Note(){}
+
     public Note(NoteBuilder builder) {
         this.title = builder.title;
         this.description = builder.description;

@@ -2,6 +2,7 @@ package com.fse.eu.notz;
 
 
         import android.app.Activity;
+        import android.content.ContentValues;
         import android.content.DialogInterface;
         import android.content.Intent;
         import android.support.design.widget.FloatingActionButton;
@@ -29,6 +30,7 @@ public class MainActivity extends AppCompatActivity {
     private NotesAdapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
     private FloatingActionButton addNoteButton;
+    private DatabaseHandler mDbHandler;
 
     // private String[] myDataset = {"nota 1"," nota 2", "fai la spesa", "paga bolletta luca", "dadsadasa", "dsasdasd", "dassad"};
     private ArrayList<Note> myDataset;
@@ -50,6 +52,9 @@ public class MainActivity extends AppCompatActivity {
         mRecyclerView.setLayoutManager(mLayoutManager);
 
         myDataset = new ArrayList<>();
+
+        DatabaseHandler dbHandler = new DatabaseHandler(this);
+        myDataset.addAll(dbHandler.getAllNotes());
 
 
         // specify an adapter (see also next example)
@@ -84,11 +89,19 @@ public class MainActivity extends AppCompatActivity {
                         data.getStringExtra("title"),
                         data.getStringExtra("description"));
 
+                mDbHandler.updateNote(mAdapter.getNote(editedNotePosition));  //IMPORTANTE: QUESTO VA DOPO DEL  mAdapter.updateNote(editedNotePosition ...)
+
+
+
+
             }
 
             if(resultCode == RESUL_REMOVE_NOTE){
                 final int editedNotePosition = data.getIntExtra("position", -1);
+                mDbHandler.deletNote(mAdapter.getNote(editedNotePosition)); //IMPORTANTE: QUESTO VA PRIMA DEL  mAdapter.removeNote(editedNotePosition)
                 mAdapter.removeNote(editedNotePosition);
+
+
 
 
                 Snackbar.make(mRecyclerView,getString(R.string.note_removed),Snackbar.LENGTH_LONG)
@@ -100,6 +113,7 @@ public class MainActivity extends AppCompatActivity {
                                         data.getStringExtra("description"));
 
                                 mAdapter.addNote(editedNotePosition,note);
+                                mDbHandler.addNote(note);
                             }
                         })
                         .show();
@@ -142,6 +156,7 @@ public class MainActivity extends AppCompatActivity {
                                         .setShownOnTop(true);
 
                                 mAdapter.addNote(builder.build());
+                                mDbHandler.addNote(builder.build());
 
                             }
                         })
@@ -156,6 +171,7 @@ public class MainActivity extends AppCompatActivity {
                 .show();
 
     }
+
 
 
 }
