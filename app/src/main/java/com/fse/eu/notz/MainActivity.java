@@ -19,17 +19,25 @@ package com.fse.eu.notz;
         import android.widget.ProgressBar;
         import android.widget.Toast;
 
+        import com.android.volley.AuthFailureError;
         import com.android.volley.NetworkResponse;
         import com.android.volley.Request;
         import com.android.volley.RequestQueue;
         import com.android.volley.Response;
         import com.android.volley.VolleyError;
         import com.android.volley.toolbox.JsonArrayRequest;
+        import com.android.volley.toolbox.JsonObjectRequest;
+        import com.android.volley.toolbox.JsonRequest;
         import com.android.volley.toolbox.Volley;
 
         import org.json.JSONArray;
+        import org.json.JSONException;
+        import org.json.JSONObject;
 
+        import java.lang.reflect.Array;
         import java.util.ArrayList;
+        import java.util.HashMap;
+        import java.util.Map;
 
         import eu.fse.notz.R;
 
@@ -65,10 +73,17 @@ public class MainActivity extends AppCompatActivity {
 
         myDataset = new ArrayList<>();
 
-
         // specify an adapter (see also next example)
         mAdapter = new NotesAdapter(myDataset, this);
         mRecyclerView.setAdapter(mAdapter);
+
+        if(getIntent()!=null){
+            Intent intent = getIntent();
+            if(intent.getAction().equals(Intent.ACTION_SEND)){
+                String title = intent.getStringExtra(Intent.EXTRA_TEXT);
+                showDialog(title);
+            }
+        }
 
         spinner=(ProgressBar)findViewById(R.id.progressBar);
 
@@ -130,6 +145,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void showDialog() {
+        showDialog(null);
+    }
+
+    private void showDialog(String title) {
 
         final AlertDialog.Builder alertBuilder = new AlertDialog.Builder(this);
 
@@ -139,6 +158,8 @@ public class MainActivity extends AppCompatActivity {
 
         final EditText titleEt = (EditText) dialogView.findViewById(R.id.dialog_title_et);
         final EditText descriptionEt = (EditText) dialogView.findViewById(R.id.dialog_description_et);
+
+        if(title!=null) titleEt.setText(title);
 
 
         alertBuilder.setView(dialogView)
@@ -185,23 +206,32 @@ public class MainActivity extends AppCompatActivity {
         String url = "http://5af1bf8530f9490014ead894.mockapi.io/api/v1/notes";
 
         // Request a string response from the provided URL.
-        JsonArrayRequest jsonRequest = new JsonArrayRequest(
+        final JsonObjectRequest jsonRequest = new JsonObjectRequest
+                (
                 Request.Method.GET, // METHOD
                 url, // URL
                 null, // Body parameters
-                new Response.Listener<JSONArray>() {
+                new Response.Listener<JSONObject>() {
                     @Override
-                    public void onResponse(JSONArray response) {
+                    public void onResponse(JSONObject response) {
                         spinner.setVisibility(View.GONE);
                         // TODO manage success
-                        Log.d("jsonRequest",response.toString());
-                        ArrayList<Note> noteListFromResponse = Note.getNotesList(response);
-                        mAdapter.addNotesList(noteListFromResponse);
+
+                        try {
+                           JSONArray data = response.getJSONArray("data");
+
+                            Log.d("jsonRequest", response.toString());
+                            ArrayList<Note> noteListFromResponse = Note.getNotesList(data);
+                            mAdapter.addNotesList(noteListFromResponse);
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
                     }
 
                 },
                 new Response.ErrorListener() {
-
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         spinner.setVisibility(View.GONE);
@@ -215,12 +245,13 @@ public class MainActivity extends AppCompatActivity {
 
                     }
 
-
                 });
 
         // Add the request to the RequestQueue.
         queue.add(jsonRequest);
     }
+
+
 
 
 }
