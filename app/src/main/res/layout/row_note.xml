@@ -11,7 +11,16 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:orientation="vertical"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:weightSum="1">
+
+        <ImageView
+            android:visibility="invisible"
+            android:id="@+id/favourite_star"
+            android:layout_width="50dp"
+            android:layout_height="33dp"
+            android:layout_gravity="end"
+            cardview:srcCompat="@mipmap/baseline_star_rate_white_24dp"/>
 
         <TextView
             android:id="@+id/title_tv"

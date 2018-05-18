@@ -9,6 +9,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -24,6 +25,8 @@ public class NoteActivity extends AppCompatActivity {
 
     Intent intent;
 
+    //CheckBox favourite;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -33,6 +36,7 @@ public class NoteActivity extends AppCompatActivity {
         editConfirmBtn = (Button) findViewById(R.id.edit_confirm);
         deleteButton = (Button) findViewById(R.id.edit_delete);
         editCancelBtn = (Button) findViewById(R.id.edit_cancel);
+       // favourite = (CheckBox) findViewById(R.id.checkBox);
 
         //get values from launching intent
         intent = getIntent();
@@ -59,6 +63,10 @@ public class NoteActivity extends AppCompatActivity {
                 returnIntent.putExtra("description", editedDescription);
                 returnIntent.putExtra("position", position);
                 setResult(Activity.RESULT_OK, returnIntent);
+
+                /*if (favourite.isChecked()){
+                    setResult(MainActivity.RESUL_FAVOURITE_NOTE, returnIntent);
+                }*/
 
 
                 finish();
@@ -125,6 +133,20 @@ public class NoteActivity extends AppCompatActivity {
 
             return true;
         }
+
+      /*  if (item.getItemId() == R.id.edit_favourite){
+
+            int position = intent.getIntExtra("position", 1);
+
+            Intent returnIntent = new Intent ();
+            returnIntent.putExtra("title", title);
+            returnIntent.putExtra("description", description);
+            returnIntent.putExtra("position", position);
+            setResult(MainActivity.RESUL_FAVOURITE_NOTE, returnIntent);
+
+            finish();
+            return true;
+        }*/
 
         return super.onOptionsItemSelected(item);
     }

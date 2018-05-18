@@ -15,7 +15,10 @@ package com.fse.eu.notz;
         import android.support.v7.widget.StaggeredGridLayoutManager;
         import android.view.LayoutInflater;
         import android.view.View;
+        import android.widget.CheckBox;
         import android.widget.EditText;
+        import android.widget.ImageView;
+        import android.widget.ProgressBar;
 
         import java.util.ArrayList;
 
@@ -30,7 +33,10 @@ public class MainActivity extends AppCompatActivity {
     private NotesAdapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
     private FloatingActionButton addNoteButton;
+    private ProgressBar loading;
+    private ImageView favourite;
     private DatabaseHandler mDbHandler;
+    private CheckBox favourite_cb;
 
     // private String[] myDataset = {"nota 1"," nota 2", "fai la spesa", "paga bolletta luca", "dadsadasa", "dsasdasd", "dassad"};
     private ArrayList<Note> myDataset;
@@ -40,10 +46,10 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         mRecyclerView = (RecyclerView) findViewById(R.id.notes_rv);
+        loading = (ProgressBar) findViewById(R.id.progressBar);
+        favourite_cb= (CheckBox) findViewById(R.id.checkBox) ;
 
-        // use this setting to improve performance if you know that changes
-        // in content do not change the layout size of the RecyclerView
-        mRecyclerView.setHasFixedSize(true);
+        loading.setVisibility(View.VISIBLE);
 
         addNoteButton = (FloatingActionButton) findViewById(R.id.add_note_fab);
 
@@ -53,14 +59,15 @@ public class MainActivity extends AppCompatActivity {
 
         myDataset = new ArrayList<>();
 
-        DatabaseHandler dbHandler = new DatabaseHandler(this);
-        myDataset.addAll(dbHandler.getAllNotes());
+        mDbHandler = new DatabaseHandler(this);
+        myDataset.addAll(mDbHandler.getAllNotes());
 
 
         // specify an adapter (see also next example)
         mAdapter = new NotesAdapter(myDataset, this);
         mRecyclerView.setAdapter(mAdapter);
 
+        loading.setVisibility(View.INVISIBLE);
 
         addNoteButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -71,7 +78,9 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+
     }
+
 
 
     @Override
@@ -91,6 +100,19 @@ public class MainActivity extends AppCompatActivity {
 
                 mDbHandler.updateNote(mAdapter.getNote(editedNotePosition));  //IMPORTANTE: QUESTO VA DOPO DEL  mAdapter.updateNote(editedNotePosition ...)
 
+                if(favourite_cb.isChecked()) {
+                    Note.NoteBuilder builder = new Note.NoteBuilder();
+                    builder
+                            .setShownOnTop(true);
+
+                    mAdapter.updateNote(editedNotePosition,data.getStringExtra("title"),
+                            data.getStringExtra("description"));
+                    mDbHandler.updateNote(mAdapter.getNote(editedNotePosition));
+
+                    favourite = (ImageView) findViewById(R.id.favourite_star);
+                    favourite.setVisibility(View.VISIBLE);
+
+                }
 
 
 
@@ -118,6 +140,8 @@ public class MainActivity extends AppCompatActivity {
                         })
                         .show();
             }
+
+
 
 
 

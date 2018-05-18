@@ -93,6 +93,7 @@ public class NotesAdapter extends RecyclerView.Adapter {
     }
 
 
+
     public void updateNote(int index, String title, String description) {
 
         Note note = mDataset.get(index);
@@ -118,7 +119,6 @@ public class NotesAdapter extends RecyclerView.Adapter {
         // create a new view
         View v = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.row_note, parent, false);
-
         ViewHolder vh = new ViewHolder(v);
         return vh;
     }

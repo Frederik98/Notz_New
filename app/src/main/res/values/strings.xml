@@ -10,4 +10,6 @@
     <string name="home_position">Posiziona sulla Home</string>
     <string name="share">Condividi</string>
     <string name="settings">Impostazioni</string>
+    <string name="favourite">Preferita</string>
+    <string name="add_to_favourite">Aggiungi alle Preferite</string>
 </resources>
